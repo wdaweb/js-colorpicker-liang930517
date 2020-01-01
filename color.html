@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .slidecontainer {
+            width: 10%;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        #colorpage {
+            height: 250px;
+            width: 350px;
+            background-color: rgb(0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="colorpage"></div>
+    <p>
+        <!-- R -->
+        <div class="slidecontainer">
+            <input type="range" min="0" max="255" value="0" class="slider" id="R_Slider">
+            <!-- min最小值 max最大值 value為一開始的初始值 -->
+            <p>R: <span id="R_Text"></span></p>
+        </div>
+
+        <!-- G -->
+        <div class="slidecontainer">
+            <input type="range" min="0" max="255" value="0" class="slider" id="G_Slider"> <!-- value為一開始的初始值(滑桿上的位置) -->
+            <p>G: <span id="G_Text"></span></p>
+        </div>
+        <!-- B -->
+        <div class="slidecontainer">
+            <input type="range" min="0" max="255" value="0" class="slider" id="B_Slider"> <!-- value為一開始的初始值 -->
+            <p>B: <span id="B_Text"></span></p>
+        </div>
+
+        <!-- Buttons -->
+        <div>
+            <input type="button" value="+" id="AddBtn">
+            <input type="button" value=" - " id="MinusBtn">
+        </div>
+        <div>
+            <input type="button" value="Random" id="RandomBtn">
+        </div>
+
+
+        <!---------------------------- JS ------------------------------>
+        <script>
+            var colorpage = document.getElementById("colorpage");  //colorpage=HTML的ID叫colorpage
+
+            // R
+            var R_Slider = document.getElementById("R_Slider");
+            var R_Text = document.getElementById("R_Text");
+            R_Text.innerHTML = R_Slider.value;  //innerHTML指的是<span id="R_Text">這裡面的東西</span>；value
+            R_Slider.oninput = function () {  //.oninput監聽功能(表示拖動slider的動作)
+                R_Text.innerHTML = R_Slider.value;  //this=R_Slider
+                ColorPicker(); //當拖動滑桿時要做 {改變colorpage的顏色}
+            }
+
+            // G
+            var G_Slider = document.getElementById("G_Slider");
+            var G_Text = document.getElementById("G_Text");
+            G_Text.innerHTML = G_Slider.value;
+            G_Slider.oninput = function () {
+                G_Text.innerHTML = this.value;
+                ColorPicker();
+            }
+
+            // B
+            var B_Slider = document.getElementById("B_Slider");
+            var B_Text = document.getElementById("B_Text");
+            B_Text.innerHTML = B_Slider.value;
+
+            B_Slider.oninput = function () {
+                B_Text.innerHTML = this.value;
+                ColorPicker();
+            }
+
+            function ColorPicker() {
+                var r = parseInt(R_Slider.value, 10).toString(); //parseInt把浮點數(小數點)轉換成數字；10是(進位制)10進位的意思 將小數點轉換為整數.toString()轉換成字串
+                var g = parseInt(G_Slider.value, 10).toString();
+                var b = parseInt(B_Slider.value, 10).toString();
+                var rgb = "rgb(" + r + "," + g + "," + b + ")";
+                colorpage.style.backgroundColor = rgb;    // rgb(255,255,255)
+                //colorpage.style.backgroundColor = "rgb(142,142,243)";
+            }
+
+            // Random
+                function RandomPicker() {
+                var r_rand = parseInt(Math.random() * 256, 10); // 0~255
+                var g_rand = parseInt(Math.random() * 256, 10);
+                var b_rand = parseInt(Math.random() * 256, 10);
+
+                var r_str = r_rand.toString();
+                var g_str = g_rand.toString();
+                var b_str = b_rand.toString();
+                var rgb = "rgb(" + r_str + "," + g_str + "," + b_str + ")";
+                colorpage.style.backgroundColor = rgb;
+
+                // Slider 位置 & Text 數值
+                R_Slider.value = R_Text.innerHTML = r_rand;
+                G_Slider.value = G_Text.innerHTML = g_rand;
+                B_Slider.value = B_Text.innerHTML = b_rand;
+            }
+
+            // + - 按鈕
+            function SetPicker(num) {
+                var r_num = parseInt(R_Slider.value, 10) + num; //SetPicker(5); (5)的5代表num;
+                var g_num = parseInt(G_Slider.value, 10) + num;
+                var b_num = parseInt(B_Slider.value, 10) + num;
+
+                //+ 防呆
+                if (r_num > 255) r_num = 255;
+                if (g_num > 255) g_num = 255;
+                if (b_num > 255) b_num = 255;
+                //- 防呆
+                if (r_num < 0) r_num = 0;
+                if (g_num < 0) g_num = 0;
+                if (b_num < 0) b_num = 0;
+
+                var r = r_num.toString();
+                var g = g_num.toString();
+                var b = b_num.toString();
+                var rgb = "rgb(" + r + "," + g + "," + b + ")";
+                colorpage.style.backgroundColor = rgb;
+
+                // Slider 位置 & Text 數值
+                R_Slider.value = R_Text.innerHTML = r_num;
+                G_Slider.value = G_Text.innerHTML = g_num;
+                B_Slider.value = B_Text.innerHTML = b_num;
+            }
+
+            document.getElementById("AddBtn").addEventListener("click", function () {
+                SetPicker(5);
+            });
+            document.getElementById("MinusBtn").addEventListener("click", function () {
+                SetPicker(-5);
+            });
+            document.getElementById("RandomBtn").addEventListener("mousedown", function () {
+                isHold = true;
+            });
+            document.getElementById("RandomBtn").addEventListener("mouseup", function () {
+                isHold = false;
+            });
+
+            var isHold = false;
+            setInterval(function () {
+                if (isHold) {       //if (false) {裡面的事不會去做}；當我按下滑鼠mousedown(常按滑鼠isHold = true)會變成if (true){做裡面的事}
+                    RandomPicker();
+                }
+            }, 100); // 0.1 second
+
+        </script>
+
+</body>
+
+</html>
